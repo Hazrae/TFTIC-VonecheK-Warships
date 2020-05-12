@@ -5,6 +5,12 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ProjectWarshipDB", "ProjectWarshipDB\ProjectWarshipDB.sqlproj", "{8A54C205-C046-4608-A3CC-FBD194AA64CF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB", "DB", "{34FC994A-8C5F-43EB-A1AF-3F818EF6BFA1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DAL", "DAL", "{7FB99AA4-13E1-4547-BA27-969192752DFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warships_DAL", "Warships_DAL\Warships_DAL.csproj", "{9E05548B-50E3-4783-A73F-C1D761996765}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,9 +23,17 @@ Global
 		{8A54C205-C046-4608-A3CC-FBD194AA64CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A54C205-C046-4608-A3CC-FBD194AA64CF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8A54C205-C046-4608-A3CC-FBD194AA64CF}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{9E05548B-50E3-4783-A73F-C1D761996765}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E05548B-50E3-4783-A73F-C1D761996765}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E05548B-50E3-4783-A73F-C1D761996765}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E05548B-50E3-4783-A73F-C1D761996765}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8A54C205-C046-4608-A3CC-FBD194AA64CF} = {34FC994A-8C5F-43EB-A1AF-3F818EF6BFA1}
+		{9E05548B-50E3-4783-A73F-C1D761996765} = {7FB99AA4-13E1-4547-BA27-969192752DFE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD51B367-2ED9-4481-8B57-EFCA1603AC75}

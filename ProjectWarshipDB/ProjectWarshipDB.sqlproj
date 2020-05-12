@@ -64,11 +64,13 @@
     <Folder Include="User\Views" />
     <Folder Include="Chat\Table" />
     <Folder Include="User\Table" />
+    <Folder Include="Chat\StoredProcedures" />
+    <Folder Include="Chat\Triggers" />
+    <Folder Include="Chat\Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tools\Salt.sql" />
     <Build Include="User\Views\UserSafeView.sql" />
-    <Build Include="User\Triggers\OnDelete.sql" />
     <Build Include="User\StoredProcedures\AddUser.sql" />
     <Build Include="User\StoredProcedures\DeleteUser.sql" />
     <Build Include="User\StoredProcedures\UpdateAccountType.sql" />
