@@ -1,0 +1,6 @@
+﻿CREATE PROCEDURE [dbo].[GetUsers]
+AS
+BEGIN
+	SELECT * FROM UserSafeView
+END
+

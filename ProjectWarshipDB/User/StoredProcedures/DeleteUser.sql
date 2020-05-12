@@ -1,7 +1,9 @@
 ﻿CREATE PROCEDURE [dbo].[DeleteUser]
-	@mail varchar(50)
+	@id varchar(50)
 AS
 BEGIN
-		UPDATE [User] SET isDelete = 1 WHERE mail = @mail
+		UPDATE [User] 
+		SET isDelete = 1 
+		WHERE id = @id
 END
 

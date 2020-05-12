@@ -73,11 +73,14 @@
     <Build Include="User\Views\UserSafeView.sql" />
     <Build Include="User\StoredProcedures\AddUser.sql" />
     <Build Include="User\StoredProcedures\DeleteUser.sql" />
-    <Build Include="User\StoredProcedures\UpdateAccountType.sql" />
+    <Build Include="User\StoredProcedures\UpdateAccountSpec.sql" />
     <Build Include="User\StoredProcedures\UpdateUser.sql" />
     <Build Include="Chat\Table\Chat.sql" />
     <Build Include="User\Table\User.sql" />
     <Build Include="User\Triggers\OnDelete.sql" />
+    <Build Include="User\StoredProcedures\GetUsers.sql" />
+    <Build Include="User\StoredProcedures\GetOne.sql" />
+    <Build Include="User\StoredProcedures\LoginUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ProjectWarshipDB.publish.xml" />

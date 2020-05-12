@@ -1,6 +1,7 @@
 ﻿CREATE TABLE [dbo].[User]
 (
-	[mail] nvarchar(50) NOT NULL PRIMARY KEY,
+	[id] int identity primary key,
+	[mail] nvarchar(50) NOT NULL,
 	[login] nvarchar(25) not null,
 	[password] varbinary(64) not null,
 	[birthDate] Date not null,
