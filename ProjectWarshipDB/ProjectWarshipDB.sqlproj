@@ -77,5 +77,9 @@
     <Build Include="User\StoredProcedures\UpdateUser.sql" />
     <Build Include="Chat\Table\Chat.sql" />
     <Build Include="User\Table\User.sql" />
+    <Build Include="User\Triggers\OnDelete.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ProjectWarshipDB.publish.xml" />
   </ItemGroup>
 </Project>
