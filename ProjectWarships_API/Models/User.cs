@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Warships_DAL.Models
+namespace ProjectWarships_API.Models
 {
     public class User
     {
@@ -13,7 +14,7 @@ namespace Warships_DAL.Models
         public DateTime BirthDate { get; set; }
         public string Country { get; set; }
         public Boolean IsDelete { get; set; }
-        public Boolean isActive { get; set; }
+        public Boolean IsActive { get; set; }
         public Boolean IsAdmin { get; set; }
     }
 }

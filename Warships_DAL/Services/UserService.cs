@@ -9,22 +9,29 @@ using Warships_DAL.Utils;
 
 namespace Warships_DAL.Services
 {
+
+    //IRepo ; basic CRUD
+    //IUser : specific user DB management
     public class UserService : IRepository<User>, IUser
     {
+
+        internal UserService(){      }
         public void Create(User u)
         {
+            //Add user in DB
+
             using (SqlCommand cmd = new SqlCommand("AddUser", Handler.ConnecDB))
             {
-
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("mail", u.mail);
-                cmd.Parameters.AddWithValue("login", u.login);
-                cmd.Parameters.AddWithValue("password", u.password);
-                cmd.Parameters.AddWithValue("birthDate", u.birthDate);
-                cmd.Parameters.AddWithValue("country", u.country);
+                cmd.Parameters.AddWithValue("mail", u.Mail);
+                cmd.Parameters.AddWithValue("login", u.Login);
+                cmd.Parameters.AddWithValue("password", u.Password);
+                cmd.Parameters.AddWithValue("birthDate", u.BirthDate);
+                cmd.Parameters.AddWithValue("country", u.Country);
 
                 Handler.ConnecDB.Open();
+                
                 cmd.ExecuteNonQuery();
                 Handler.ConnecDB.Close();
 
@@ -33,6 +40,9 @@ namespace Warships_DAL.Services
 
         public void Delete(int id)
         {
+
+            //Soft delete of user in DB
+
             using (SqlCommand cmd = new SqlCommand("DeleteUser", Handler.ConnecDB))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -48,30 +58,29 @@ namespace Warships_DAL.Services
 
         public List<User> GetAll()
         {
+            
+            // User list from DB
+
             List<User> list = new List<User>();
             Handler.ConnecDB.Open();
-
-            //creation de la cmd
+           
             using (SqlCommand cmd = new SqlCommand("GetUSers", Handler.ConnecDB))
-            {
-
-                //execution
+            {                
                 using (SqlDataReader dr = cmd.ExecuteReader())
-                {
-                    //creation de la liste en bouclant sur le DR
+                {                   
                     while (dr.Read())
                     {
 
                         list.Add(new User
                         {
-                            id = (int)dr["id"],
-                            mail = dr["mail"].ToString(),
-                            login = dr["login"].ToString(),
-                            birthDate = (DateTime)dr["birthDate"],
-                            country = dr["country"].ToString(),
+                            Id = (int)dr["id"],
+                            Mail = dr["mail"].ToString(),
+                            Login = dr["login"].ToString(),
+                            BirthDate = (DateTime)dr["birthDate"],
+                            Country = dr["country"].ToString(),
                             isActive = (bool)dr["isActive"],
-                            isDelete = (bool)dr["isDelete"],
-                            isAdmin = (bool)dr["isAdmin"]
+                            IsDelete = (bool)dr["isDelete"],
+                            IsAdmin = (bool)dr["isAdmin"]
                         }); ;
                     }
                 }
@@ -83,6 +92,9 @@ namespace Warships_DAL.Services
         }
         public User GetOne(int id)
         {
+
+            // Get a specific user through his ID
+
             using (SqlCommand cmd = new SqlCommand("GetOne", Handler.ConnecDB))
             {
                 cmd.Parameters.AddWithValue("id", id);
@@ -92,14 +104,14 @@ namespace Warships_DAL.Services
                     dr.Read();
                     return new User
                     {
-                        id = (int)dr["id"],
-                        mail = dr["mail"].ToString(),
-                        login = dr["login"].ToString(),
-                        birthDate = (DateTime)dr["birthDate"],
-                        country = dr["country"].ToString(),
+                        Id = (int)dr["id"],
+                        Mail = dr["mail"].ToString(),
+                        Login = dr["login"].ToString(),
+                        BirthDate = (DateTime)dr["birthDate"],
+                        Country = dr["country"].ToString(),
                         isActive = (bool)dr["isActive"],
-                        isDelete = (bool)dr["isDelete"],
-                        isAdmin = (bool)dr["isAdmin"]
+                        IsDelete = (bool)dr["isDelete"],
+                        IsAdmin = (bool)dr["isAdmin"]
                     }; ;
                 }
             }
@@ -107,17 +119,19 @@ namespace Warships_DAL.Services
 
         public void Update(User u)
         {
+            //Update User details
+
             using (SqlCommand cmd = new SqlCommand("UpdateUser", Handler.ConnecDB))
             {
 
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("id", u.id);
-                cmd.Parameters.AddWithValue("mail", u.mail);
-                cmd.Parameters.AddWithValue("login", u.login);
-                cmd.Parameters.AddWithValue("password", u.password);
-                cmd.Parameters.AddWithValue("birthDate", u.birthDate);
-                cmd.Parameters.AddWithValue("country", u.country);
+                cmd.Parameters.AddWithValue("id", u.Id);
+                cmd.Parameters.AddWithValue("mail", u.Mail);
+                cmd.Parameters.AddWithValue("login", u.Login);
+                cmd.Parameters.AddWithValue("password", u.Password);
+                cmd.Parameters.AddWithValue("birthDate", u.BirthDate);
+                cmd.Parameters.AddWithValue("country", u.Country);
 
                 Handler.ConnecDB.Open();
                 cmd.ExecuteNonQuery();
@@ -128,6 +142,9 @@ namespace Warships_DAL.Services
 
         public User Login(string login, string password)
         {
+
+            //Log an user in through his credentials
+
             using (SqlCommand cmd = new SqlCommand("LoginUser", Handler.ConnecDB))
             {
 
@@ -142,43 +159,85 @@ namespace Warships_DAL.Services
                     dr.Read();
                     return new User
                     {
-                        id = (int)dr["id"],
-                        mail = dr["mail"].ToString(),
-                        login = dr["login"].ToString(),
-                        birthDate = (DateTime)dr["birthDate"],
-                        country = dr["country"].ToString(),
+                        Id = (int)dr["id"],
+                        Mail = dr["mail"].ToString(),
+                        Login = dr["login"].ToString(),
+                        BirthDate = (DateTime)dr["birthDate"],
+                        Country = dr["country"].ToString(),
                         isActive = (bool)dr["isActive"],
-                        isDelete = (bool)dr["isDelete"],
-                        isAdmin = (bool)dr["isAdmin"]
+                        IsDelete = (bool)dr["isDelete"],
+                        IsAdmin = (bool)dr["isAdmin"]
                     }; ;
                 }
 
             }
 
         }
-
+         
         public void ChangeAccountSpec(User u)
+        {     
+
+            //Change the Spec bits of an user
+
+            using (SqlCommand cmd = new SqlCommand("UpdateAccountSpec", Handler.ConnecDB))
+            {
+
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("id", u.Id);
+                cmd.Parameters.AddWithValue("isActive", u.isActive);
+                cmd.Parameters.AddWithValue("isAdmin", u.IsAdmin);
+                cmd.Parameters.AddWithValue("isDelete", u.IsDelete);
+
+                Handler.ConnecDB.Open();
+                cmd.ExecuteNonQuery();
+                Handler.ConnecDB.Close();
+
+            }
+        }
+
+        public bool CheckMail(string mail)
         {
+            using (SqlCommand cmd = new SqlCommand("CheckMail", Handler.ConnecDB))
+            {
 
-          
-                using (SqlCommand cmd = new SqlCommand("UpdateAccountSpec", Handler.ConnecDB))
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("mail", mail);               
+
+                Handler.ConnecDB.Open();
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("id", u.id);
-                    cmd.Parameters.AddWithValue("isActive", u.isActive);
-                    cmd.Parameters.AddWithValue("isAdmin", u.isAdmin);
-                    cmd.Parameters.AddWithValue("isDelete", u.isDelete);
-              
-                    Handler.ConnecDB.Open();
-                    cmd.ExecuteNonQuery();
-                    Handler.ConnecDB.Close();
-
+                    if (dr.Read())
+                        return true;
+                    else
+                        return false;                    
                 }
-            
+                
+
+            }
+        }
+
+        public bool CheckLogin(string login)
+        {
+            using (SqlCommand cmd = new SqlCommand("CheckLogin", Handler.ConnecDB))
+            {
+
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("login", login);
+
+                Handler.ConnecDB.Open();
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                        return true;
+                    else
+                        return false;
+                }
 
 
+            }
         }
     }
 }
