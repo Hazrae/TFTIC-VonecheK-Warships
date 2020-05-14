@@ -81,8 +81,6 @@
     <Build Include="User\StoredProcedures\GetUsers.sql" />
     <Build Include="User\StoredProcedures\GetOne.sql" />
     <Build Include="User\StoredProcedures\LoginUser.sql" />
-    <Build Include="User\StoredProcedures\CheckMail.sql" />
-    <Build Include="User\StoredProcedures\CheckLogin.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ProjectWarshipDB.publish.xml" />

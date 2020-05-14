@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ProjectWarships_Tools.Cryptography;
 using ProjectWarships_Web.Models;
 using ProjectWarships_Web.Utils;
 
@@ -12,8 +13,9 @@ namespace ProjectWarships_Web.Controllers
 {
     public class UserController : BaseController
     {
+        private IRSAEncryption _encrypt;
         // GET: User   
-        public UserController(IAPIConsume consumeInstance) : base(consumeInstance){        }
+        public UserController(IAPIConsume consumeInstance) : base(consumeInstance) { }
         public ActionResult Index()
         {
             return View();
@@ -38,25 +40,27 @@ namespace ProjectWarships_Web.Controllers
         {
             try
             {
-                
-                    //List<User> listUser = _consumeInstance.Get<List<User>>("User");
 
-                if (_consumeInstance.PostWithReturn<string,bool>("User/CheckMail",ru.Mail))
-                    {                      
-                        ModelState.AddModelError(string.Empty, "Email address already in use");
-                    }
-                   
-                    if (_consumeInstance.PostWithReturn<string, bool>("User/CheckLogin", ru.Mail))
-                    {                            
-                       ModelState.AddModelError(string.Empty, "Login already in use");                
-                    }                  
-                           
-                    
-                    
-                 if (ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
-                    _consumeInstance.Post<RegisterUser>("User", ru);
-                    return RedirectToAction("Index","Home");
+                    byte[] pwEncrypt;
+                    _encrypt = new RSAEncryption(_consumeInstance.Get<byte[]>("Auth/GetKey"));
+                    pwEncrypt = _encrypt.Encrypt(ru.Password);
+                    ru.Password = Convert.ToBase64String(pwEncrypt);
+
+                    UserResponse ur = _consumeInstance.PostWithReturn<RegisterUser, UserResponse>("User", ru);
+                    if (ur.ErrorCode == 1)
+                    {
+                        ModelState.AddModelError(string.Empty, "E-mail adress is already in use");
+                        return View(ru);
+                    }
+                    else if (ur.ErrorCode == 2)
+                    {
+                        ModelState.AddModelError(string.Empty, "Login is already in use");
+                        return View(ru);
+                    }
+                    else
+                        return RedirectToAction("Index", "Home");
                 }
                 else
                 {

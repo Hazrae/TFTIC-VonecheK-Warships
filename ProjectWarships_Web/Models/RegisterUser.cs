@@ -14,11 +14,13 @@ namespace ProjectWarships_Web.Models
         public string Login { get; set; }
 
         [Required]
-        [MaxLength(25)]
+        [MinLength(4)]
+        [MaxLength(20)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required]
+        [MinLength(4)]
         [MaxLength(20)]
         [DataType(DataType.Password)]
         [Compare(nameof(Password))]
@@ -34,10 +36,6 @@ namespace ProjectWarships_Web.Models
         [AgeValidator(ErrorMessage = "You must have 12+ years")]
         [DataType(DataType.Date)]
         [Display(Name = "Date of Birth")]
-        public DateTime BirthDate { get; set; }
-
-        [Required]
-        [MaxLength(25)]
-        public string Country { get; set; }
+        public DateTime BirthDate { get; set; }   
     }
 }

@@ -39,8 +39,7 @@ namespace ProjectWarships_Web.Utils
             {
                 message.EnsureSuccessStatusCode();
                 if (!message.IsSuccessStatusCode) { throw new HttpRequestException(); }
-                string json2 = message.Content.ReadAsStringAsync().Result;
-
+                string json2 = message.Content.ReadAsStringAsync().Result;              
                 return JsonConvert.DeserializeObject<T2>(json2);
             }
         }

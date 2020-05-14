@@ -15,9 +15,5 @@ namespace ProjectWarships_Web.Controllers
         {
             _consumeInstance = APIConsume;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
     }
 }

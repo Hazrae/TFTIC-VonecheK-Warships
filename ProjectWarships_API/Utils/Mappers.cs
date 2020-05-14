@@ -19,8 +19,7 @@ namespace ProjectWarships_API.Utils
                 Login = u.Login,
                 Mail = u.Mail,
                 Password = u.Password,
-                BirthDate = u.BirthDate,
-                Country = u.Country,
+                BirthDate = u.BirthDate,      
                 IsDelete = u.IsDelete,
                 isActive = u.IsActive,
                 IsAdmin = u.IsAdmin
@@ -35,8 +34,7 @@ namespace ProjectWarships_API.Utils
                 Login = u.Login,
                 Mail = u.Mail,
                 Password = u.Password,
-                BirthDate = u.BirthDate,
-                Country = u.Country,
+                BirthDate = u.BirthDate,            
                 IsDelete = u.IsDelete,
                 IsActive = u.isActive,
                 IsAdmin = u.IsAdmin

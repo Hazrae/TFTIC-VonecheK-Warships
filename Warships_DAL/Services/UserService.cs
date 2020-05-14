@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Xml;
 using Warships_DAL.Models;
 using Warships_DAL.Repositories;
 using Warships_DAL.Utils;
@@ -12,107 +14,112 @@ namespace Warships_DAL.Services
 
     //IRepo ; basic CRUD
     //IUser : specific user DB management
-    public class UserService : IRepository<User>, IUser
+    public class UserService : Service, IRepository<User>, IUser
     {
 
-        internal UserService(){      }
+        public UserService() : base(){ }    
+        
         public void Create(User u)
         {
-            //Add user in DB
-
-            using (SqlCommand cmd = new SqlCommand("AddUser", Handler.ConnecDB))
+            using (SqlConnection connec = new SqlConnection(stringConnec))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
+                //Add user in DB            
+                using (SqlCommand cmd = new SqlCommand("AddUser", connec))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("mail", u.Mail);
-                cmd.Parameters.AddWithValue("login", u.Login);
-                cmd.Parameters.AddWithValue("password", u.Password);
-                cmd.Parameters.AddWithValue("birthDate", u.BirthDate);
-                cmd.Parameters.AddWithValue("country", u.Country);
+                    cmd.Parameters.AddWithValue("mail", u.Mail);
+                    cmd.Parameters.AddWithValue("login", u.Login);
+                    cmd.Parameters.AddWithValue("password", u.Password);
+                    cmd.Parameters.AddWithValue("birthDate", u.BirthDate);
 
-                Handler.ConnecDB.Open();
-                
-                cmd.ExecuteNonQuery();
-                Handler.ConnecDB.Close();
-
+                    connec.Open();
+                    cmd.ExecuteNonQuery();
+                }
             }
+            
+            
+        
         }
 
         public void Delete(int id)
         {
-
             //Soft delete of user in DB
-
-            using (SqlCommand cmd = new SqlCommand("DeleteUser", Handler.ConnecDB))
+            using (SqlConnection connec = new SqlConnection(stringConnec))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("id", id);
+                using (SqlCommand cmd = new SqlCommand("DeleteUser", connec))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                Handler.ConnecDB.Open();
-                cmd.ExecuteNonQuery();
-                Handler.ConnecDB.Close();
+                    cmd.Parameters.AddWithValue("id", id);
 
+                    connec.Open();
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
 
         public List<User> GetAll()
         {
-            
+
             // User list from DB
 
             List<User> list = new List<User>();
-            Handler.ConnecDB.Open();
-           
-            using (SqlCommand cmd = new SqlCommand("GetUSers", Handler.ConnecDB))
-            {                
-                using (SqlDataReader dr = cmd.ExecuteReader())
-                {                   
-                    while (dr.Read())
-                    {
 
-                        list.Add(new User
+            using (SqlConnection connec = new SqlConnection(stringConnec))
+            {
+
+                using (SqlCommand cmd = new SqlCommand("GetUSers", connec))
+                {
+                    connec.Open();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
                         {
-                            Id = (int)dr["id"],
-                            Mail = dr["mail"].ToString(),
-                            Login = dr["login"].ToString(),
-                            BirthDate = (DateTime)dr["birthDate"],
-                            Country = dr["country"].ToString(),
-                            isActive = (bool)dr["isActive"],
-                            IsDelete = (bool)dr["isDelete"],
-                            IsAdmin = (bool)dr["isAdmin"]
-                        }); ;
+
+                            list.Add(new User
+                            {
+                                Id = (int)dr["id"],
+                                Mail = dr["mail"].ToString(),
+                                Login = dr["login"].ToString(),
+                                BirthDate = (DateTime)dr["birthDate"],                              
+                                isActive = (bool)dr["isActive"],
+                                IsDelete = (bool)dr["isDelete"],
+                                IsAdmin = (bool)dr["isAdmin"]
+                            }); ;
+                        }
                     }
                 }
 
-                Handler.ConnecDB.Close();
                 return list;
-
             }
         }
         public User GetOne(int id)
         {
-
             // Get a specific user through his ID
-
-            using (SqlCommand cmd = new SqlCommand("GetOne", Handler.ConnecDB))
+            using (SqlConnection connec = new SqlConnection(stringConnec))
             {
-                cmd.Parameters.AddWithValue("id", id);
-                //execution
-                using (SqlDataReader dr = cmd.ExecuteReader())
+
+                using (SqlCommand cmd = new SqlCommand("GetOne", connec))
                 {
-                    dr.Read();
-                    return new User
+                    cmd.Parameters.AddWithValue("id", id);
+                    //execution
+                    connec.Open();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        Id = (int)dr["id"],
-                        Mail = dr["mail"].ToString(),
-                        Login = dr["login"].ToString(),
-                        BirthDate = (DateTime)dr["birthDate"],
-                        Country = dr["country"].ToString(),
-                        isActive = (bool)dr["isActive"],
-                        IsDelete = (bool)dr["isDelete"],
-                        IsAdmin = (bool)dr["isAdmin"]
-                    }; ;
+                        dr.Read();
+                        return new User
+                        {
+                            Id = (int)dr["id"],
+                            Mail = dr["mail"].ToString(),
+                            Login = dr["login"].ToString(),
+                            BirthDate = (DateTime)dr["birthDate"],                           
+                            isActive = (bool)dr["isActive"],
+                            IsDelete = (bool)dr["isDelete"],
+                            IsAdmin = (bool)dr["isAdmin"]
+                        }; ;
+                    }
                 }
             }
         }
@@ -120,23 +127,23 @@ namespace Warships_DAL.Services
         public void Update(User u)
         {
             //Update User details
-
-            using (SqlCommand cmd = new SqlCommand("UpdateUser", Handler.ConnecDB))
+            using (SqlConnection connec = new SqlConnection(stringConnec))
             {
 
-                cmd.CommandType = CommandType.StoredProcedure;
+                using (SqlCommand cmd = new SqlCommand("UpdateUser", connec))
+                {
 
-                cmd.Parameters.AddWithValue("id", u.Id);
-                cmd.Parameters.AddWithValue("mail", u.Mail);
-                cmd.Parameters.AddWithValue("login", u.Login);
-                cmd.Parameters.AddWithValue("password", u.Password);
-                cmd.Parameters.AddWithValue("birthDate", u.BirthDate);
-                cmd.Parameters.AddWithValue("country", u.Country);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                Handler.ConnecDB.Open();
-                cmd.ExecuteNonQuery();
-                Handler.ConnecDB.Close();
+                    cmd.Parameters.AddWithValue("id", u.Id);
+                    cmd.Parameters.AddWithValue("mail", u.Mail);
+                    cmd.Parameters.AddWithValue("login", u.Login);
+                    cmd.Parameters.AddWithValue("password", u.Password);
+                    cmd.Parameters.AddWithValue("birthDate", u.BirthDate);
 
+                    connec.Open();
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
 
@@ -144,100 +151,60 @@ namespace Warships_DAL.Services
         {
 
             //Log an user in through his credentials
-
-            using (SqlCommand cmd = new SqlCommand("LoginUser", Handler.ConnecDB))
+            using (SqlConnection connec = new SqlConnection(stringConnec))
             {
 
-                cmd.CommandType = CommandType.StoredProcedure;
-
-               
-                cmd.Parameters.AddWithValue("login", login);                
-                cmd.Parameters.AddWithValue("password", password);
-
-                using (SqlDataReader dr = cmd.ExecuteReader())
+                using (SqlCommand cmd = new SqlCommand("LoginUser", connec))
                 {
-                    dr.Read();
-                    return new User
-                    {
-                        Id = (int)dr["id"],
-                        Mail = dr["mail"].ToString(),
-                        Login = dr["login"].ToString(),
-                        BirthDate = (DateTime)dr["birthDate"],
-                        Country = dr["country"].ToString(),
-                        isActive = (bool)dr["isActive"],
-                        IsDelete = (bool)dr["isDelete"],
-                        IsAdmin = (bool)dr["isAdmin"]
-                    }; ;
-                }
 
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("login", login);
+                    cmd.Parameters.AddWithValue("password", password);
+
+                    connec.Open();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        dr.Read();
+                        return new User
+                        {
+                            Id = (int)dr["id"],
+                            Mail = dr["mail"].ToString(),
+                            Login = dr["login"].ToString(),
+                            BirthDate = (DateTime)dr["birthDate"],                          
+                            isActive = (bool)dr["isActive"],
+                            IsDelete = (bool)dr["isDelete"],
+                            IsAdmin = (bool)dr["isAdmin"]
+                        }; ;
+                    }
+
+                }
             }
 
         }
-         
+
         public void ChangeAccountSpec(User u)
-        {     
+        {
 
             //Change the Spec bits of an user
-
-            using (SqlCommand cmd = new SqlCommand("UpdateAccountSpec", Handler.ConnecDB))
+            using (SqlConnection connec = new SqlConnection(stringConnec))
             {
 
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("id", u.Id);
-                cmd.Parameters.AddWithValue("isActive", u.isActive);
-                cmd.Parameters.AddWithValue("isAdmin", u.IsAdmin);
-                cmd.Parameters.AddWithValue("isDelete", u.IsDelete);
-
-                Handler.ConnecDB.Open();
-                cmd.ExecuteNonQuery();
-                Handler.ConnecDB.Close();
-
-            }
-        }
-
-        public bool CheckMail(string mail)
-        {
-            using (SqlCommand cmd = new SqlCommand("CheckMail", Handler.ConnecDB))
-            {
-
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("mail", mail);               
-
-                Handler.ConnecDB.Open();
-                using (SqlDataReader dr = cmd.ExecuteReader())
+                using (SqlCommand cmd = new SqlCommand("UpdateAccountSpec", connec))
                 {
-                    if (dr.Read())
-                        return true;
-                    else
-                        return false;                    
-                }
-                
 
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("id", u.Id);
+                    cmd.Parameters.AddWithValue("isActive", u.isActive);
+                    cmd.Parameters.AddWithValue("isAdmin", u.IsAdmin);
+                    cmd.Parameters.AddWithValue("isDelete", u.IsDelete);
+
+                    connec.Open();
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
 
-        public bool CheckLogin(string login)
-        {
-            using (SqlCommand cmd = new SqlCommand("CheckLogin", Handler.ConnecDB))
-            {
-
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("login", login);
-
-                Handler.ConnecDB.Open();
-                using (SqlDataReader dr = cmd.ExecuteReader())
-                {
-                    if (dr.Read())
-                        return true;
-                    else
-                        return false;
-                }
-
-
-            }
-        }
     }
 }

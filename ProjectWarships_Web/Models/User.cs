@@ -11,8 +11,7 @@ namespace ProjectWarships_Web.Models
         public string Login { get; set; }
         public string Password { get; set; }
         public string Mail { get; set; }
-        public DateTime BirthDate { get; set; }
-        public string Country { get; set; }
+        public DateTime BirthDate { get; set; }   
         public Boolean IsDelete { get; set; }
         public Boolean IsActive { get; set; }
         public Boolean IsAdmin { get; set; }
