@@ -118,5 +118,47 @@ namespace ProjectWarships_Web.Controllers
                 return View();
             }
         }
+
+        // GET: User/Create
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        // POST: User/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login(LogUser lu)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    byte[] pwEncrypt;
+                    _encrypt = new RSAEncryption(_consumeInstance.Get<byte[]>("Auth/GetKey"));
+                    pwEncrypt = _encrypt.Encrypt(lu.Password);
+                    lu.Password = Convert.ToBase64String(pwEncrypt);
+
+                    User u = _consumeInstance.PostWithReturn<LogUser, User>("User/Login", lu);
+                    if (u.Login != lu.Login)
+                    {
+                        ModelState.AddModelError(string.Empty, "This account doesn't exists");
+                        return View(lu);
+                    }
+                    else
+                        return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return View(lu);
+                }
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
     }
 }

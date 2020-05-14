@@ -71,5 +71,14 @@ namespace ProjectWarships_API.Controllers
             Handler.UserServiceInstance.Delete(id);
         }
 
+        [HttpPost]   
+        [Route("Login")]
+        public User Login(LogUser u)
+        {
+            string pwDecrypt = _encrypt.Decrypt(Convert.FromBase64String(u.Password));
+            u.Password = pwDecrypt;
+            return Handler.UserServiceInstance.Login(u.Login,u.Password).toAPI();
+        }
+
     }
 }

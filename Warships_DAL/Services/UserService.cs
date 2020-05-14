@@ -8,6 +8,8 @@ using System.Xml;
 using Warships_DAL.Models;
 using Warships_DAL.Repositories;
 using Warships_DAL.Utils;
+using System.Configuration;
+using System.Reflection;
 
 namespace Warships_DAL.Services
 {
@@ -16,7 +18,6 @@ namespace Warships_DAL.Services
     //IUser : specific user DB management
     public class UserService : Service, IRepository<User>, IUser
     {
-
         public UserService() : base(){ }    
         
         public void Create(User u)
@@ -149,7 +150,6 @@ namespace Warships_DAL.Services
 
         public User Login(string login, string password)
         {
-
             //Log an user in through his credentials
             using (SqlConnection connec = new SqlConnection(stringConnec))
             {
@@ -164,18 +164,23 @@ namespace Warships_DAL.Services
 
                     connec.Open();
                     using (SqlDataReader dr = cmd.ExecuteReader())
-                    {
-                        dr.Read();
-                        return new User
+                    {                     
+
+                        if (dr.Read())
                         {
-                            Id = (int)dr["id"],
-                            Mail = dr["mail"].ToString(),
-                            Login = dr["login"].ToString(),
-                            BirthDate = (DateTime)dr["birthDate"],                          
-                            isActive = (bool)dr["isActive"],
-                            IsDelete = (bool)dr["isDelete"],
-                            IsAdmin = (bool)dr["isAdmin"]
-                        }; ;
+                            return new User
+                            {
+                                Id = (int)dr["id"],
+                                Mail = dr["mail"].ToString(),
+                                Login = dr["login"].ToString(),
+                                BirthDate = (DateTime)dr["birthDate"],
+                                isActive = (bool)dr["isActive"],
+                                IsDelete = (bool)dr["isDelete"],
+                                IsAdmin = (bool)dr["isAdmin"]
+                            }; 
+                        }
+                        else
+                            return new User();
                     }
 
                 }

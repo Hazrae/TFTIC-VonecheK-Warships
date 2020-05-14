@@ -3,6 +3,8 @@
 	@password nvarchar(25)
 AS
 	BEGIN
-		exec dbo.GetOne(SELECT id FROM [User] WHERE [login] = @login AND [password] = HASHBYTES('SHA_512', dbo.Salt() + @password))
+		SELECT id,mail,[login],birthDate,isActive,isDelete,isAdmin 
+		FROM [User] 
+		WHERE [login] = @login AND [password] = HASHBYTES('SHA2_512', dbo.Salt() + @password)
 	END
 
