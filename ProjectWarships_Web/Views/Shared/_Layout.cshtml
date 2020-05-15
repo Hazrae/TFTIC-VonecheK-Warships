@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ProjectWarships_Web</title>
+    <title>@ViewData["Title"] - Project Warships</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -24,17 +24,17 @@
                         @{                          
                             if (ViewBag.IsLogged == false)
                             {
-                                <li class="nav-item">
+                                <li class="nav-item ml-auto">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Create">Register</a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item ml-auto">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
                                 </li>
                             }
                             else
                             {                             
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Deconnexion">Deconnexion</a>
+                                <li class="nav-ite mml-auto">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Deconnexion</a>
                                 </li>
                             }
 
@@ -52,7 +52,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - ProjectWarships_Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2020 - Project Warships - <a asp-area="" asp-controller="Home" asp-action="Index">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

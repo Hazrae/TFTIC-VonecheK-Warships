@@ -13,11 +13,10 @@ namespace ProjectWarships_Web.Controllers
 {
     public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
-
+        private readonly ILogger<HomeController> Logger;
         public HomeController(ILogger<HomeController> logger, IAPIConsume _consumeInstance, ISessionManager _session) : base(_consumeInstance, _session)
         {
-            _logger = logger;
+            Logger = logger;
         }
 
         public IActionResult Index()

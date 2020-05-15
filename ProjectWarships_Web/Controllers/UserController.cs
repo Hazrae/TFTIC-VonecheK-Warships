@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Extensions.Logging;
 using ProjectWarships_Tools.Cryptography;
 using ProjectWarships_Web.Infrastructure;
 using ProjectWarships_Web.Models;
@@ -16,9 +18,9 @@ namespace ProjectWarships_Web.Controllers
     public class UserController : BaseController
     {
         
-        private IRSAEncryption _encrypt;
+        private IRSAEncryption _encrypt;       
         // GET: User   
-        public UserController(IAPIConsume _consumeInstance, ISessionManager _session) : base(_consumeInstance,_session) { }
+        public UserController(IAPIConsume _consumeInstance, ISessionManager _session) : base(_consumeInstance, _session) { }
         public ActionResult Index()
         {
             return View();
@@ -177,11 +179,10 @@ namespace ProjectWarships_Web.Controllers
         }
 
         [AuthRequired]
-        public ActionResult Deconnexion()
+        public ActionResult Logout()
         {
             SessionManager.Abandon();
             return RedirectToAction("Index", "Home");
-        }
-
+        } 
     }
 }
