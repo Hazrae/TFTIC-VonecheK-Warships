@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ProjectWarships_Web.Infrastructure;
 using ProjectWarships_Web.Utils;
 
 namespace ProjectWarships_Web.Controllers
 {
+    [LoggedIn]
     public class BaseController : Controller
     {
-        protected IAPIConsume _consumeInstance { get; set; }
+        protected internal IAPIConsume ConsumeInstance { get; set; }
+        protected internal ISessionManager SessionManager { get; set; }
 
-        protected BaseController(IAPIConsume APIConsume)
+        protected BaseController(IAPIConsume _apiConsume, ISessionManager _session)
         {
-            _consumeInstance = APIConsume;
+            ConsumeInstance = _apiConsume;
+            SessionManager = _session;
+
         }
     }
 }

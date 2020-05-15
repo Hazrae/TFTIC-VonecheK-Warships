@@ -6,34 +6,40 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ProjectWarships_Tools.Cryptography;
+using ProjectWarships_Web.Infrastructure;
 using ProjectWarships_Web.Models;
 using ProjectWarships_Web.Utils;
 
 namespace ProjectWarships_Web.Controllers
 {
+   
     public class UserController : BaseController
     {
+        
         private IRSAEncryption _encrypt;
         // GET: User   
-        public UserController(IAPIConsume consumeInstance) : base(consumeInstance) { }
+        public UserController(IAPIConsume _consumeInstance, ISessionManager _session) : base(_consumeInstance,_session) { }
         public ActionResult Index()
         {
             return View();
         }
 
         // GET: User/Details/5
+        [AuthRequired]
         public ActionResult Details(int id)
         {
             return View();
         }
 
         // GET: User/Create
+        [AnonymousRequired]
         public ActionResult Create()
         {
             return View();
         }
 
         // POST: User/Create
+        [AnonymousRequired]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(RegisterUser ru)
@@ -44,11 +50,11 @@ namespace ProjectWarships_Web.Controllers
                 if (ModelState.IsValid)
                 {
                     byte[] pwEncrypt;
-                    _encrypt = new RSAEncryption(_consumeInstance.Get<byte[]>("Auth/GetKey"));
+                    _encrypt = new RSAEncryption(ConsumeInstance.Get<byte[]>("Auth/GetKey"));
                     pwEncrypt = _encrypt.Encrypt(ru.Password);
                     ru.Password = Convert.ToBase64String(pwEncrypt);
 
-                    UserResponse ur = _consumeInstance.PostWithReturn<RegisterUser, UserResponse>("User", ru);
+                    UserResponse ur = ConsumeInstance.PostWithReturn<RegisterUser, UserResponse>("User", ru);
                     if (ur.ErrorCode == 1)
                     {
                         ModelState.AddModelError(string.Empty, "E-mail adress is already in use");
@@ -74,12 +80,14 @@ namespace ProjectWarships_Web.Controllers
         }
 
         // GET: User/Edit/5
+        [AuthRequired]
         public ActionResult Edit(int id)
         {
             return View();
         }
 
         // POST: User/Edit/5
+        [AuthRequired]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -97,12 +105,14 @@ namespace ProjectWarships_Web.Controllers
         }
 
         // GET: User/Delete/5
+        [AuthRequired]
         public ActionResult Delete(int id)
         {
             return View();
         }
 
         // POST: User/Delete/5
+        [AuthRequired]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
@@ -119,6 +129,7 @@ namespace ProjectWarships_Web.Controllers
             }
         }
 
+        [AnonymousRequired]
         // GET: User/Create
         public ActionResult Login()
         {
@@ -126,6 +137,7 @@ namespace ProjectWarships_Web.Controllers
         }
 
         // POST: User/Create
+        [AnonymousRequired]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(LogUser lu)
@@ -136,18 +148,22 @@ namespace ProjectWarships_Web.Controllers
                 if (ModelState.IsValid)
                 {
                     byte[] pwEncrypt;
-                    _encrypt = new RSAEncryption(_consumeInstance.Get<byte[]>("Auth/GetKey"));
+                    _encrypt = new RSAEncryption(ConsumeInstance.Get<byte[]>("Auth/GetKey"));
                     pwEncrypt = _encrypt.Encrypt(lu.Password);
                     lu.Password = Convert.ToBase64String(pwEncrypt);
+                    User u = ConsumeInstance.PostWithReturn<LogUser, User>("User/Login", lu);
 
-                    User u = _consumeInstance.PostWithReturn<LogUser, User>("User/Login", lu);
                     if (u.Login != lu.Login)
                     {
                         ModelState.AddModelError(string.Empty, "This account doesn't exists");
                         return View(lu);
                     }
                     else
+                    {
+                        SessionManager.Id = u.Id;
+                        SessionManager.Login = u.Login;
                         return RedirectToAction("Index", "Home");
+                    }
                 }
                 else
                 {
@@ -158,6 +174,13 @@ namespace ProjectWarships_Web.Controllers
             {
                 return View();
             }
+        }
+
+        [AuthRequired]
+        public ActionResult Deconnexion()
+        {
+            SessionManager.Abandon();
+            return RedirectToAction("Index", "Home");
         }
 
     }
