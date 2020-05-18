@@ -10,6 +10,6 @@ namespace Warships_DAL.Repositories
         TEntity GetOne(int id);
         void Create(TEntity t);
         void Delete(int id);
-        void Update(TEntity t);
+        void Update(int id,TEntity t);
     }
 }

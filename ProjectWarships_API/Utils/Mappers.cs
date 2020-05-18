@@ -40,5 +40,14 @@ namespace ProjectWarships_API.Utils
                 IsAdmin = u.IsAdmin
             };
         }
+
+        public static DAL.UserPassword toDALPW(this API.UserPassword u)
+        {
+            return new DAL.UserPassword
+            {                
+                Password = u.Password,
+                OldPassword = u.OldPassword,         
+            };
+        }
     }
 }

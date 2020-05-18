@@ -73,6 +73,7 @@ namespace Warships_DAL.Services
 
                 using (SqlCommand cmd = new SqlCommand("GetUSers", connec))
                 {
+                    cmd.CommandType = CommandType.StoredProcedure;
                     connec.Open();
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
@@ -104,6 +105,7 @@ namespace Warships_DAL.Services
 
                 using (SqlCommand cmd = new SqlCommand("GetOne", connec))
                 {
+                    cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("id", id);
                     //execution
                     connec.Open();
@@ -125,7 +127,7 @@ namespace Warships_DAL.Services
             }
         }
 
-        public void Update(User u)
+        public void Update(int id,User u)
         {
             //Update User details
             using (SqlConnection connec = new SqlConnection(stringConnec))
@@ -136,10 +138,9 @@ namespace Warships_DAL.Services
 
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("id", u.Id);
+                    cmd.Parameters.AddWithValue("id", id);
                     cmd.Parameters.AddWithValue("mail", u.Mail);
-                    cmd.Parameters.AddWithValue("login", u.Login);
-                    cmd.Parameters.AddWithValue("password", u.Password);
+                    cmd.Parameters.AddWithValue("login", u.Login);                    
                     cmd.Parameters.AddWithValue("birthDate", u.BirthDate);
 
                     connec.Open();
@@ -210,6 +211,29 @@ namespace Warships_DAL.Services
                 }
             }
         }
+        public int UpdatePassword(int id, UserPassword u)
+        {
+
+            //Change the Spec bits of an user
+            using (SqlConnection connec = new SqlConnection(stringConnec))
+            {
+
+                using (SqlCommand cmd = new SqlCommand("UpdatePassword", connec))
+                {
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("id", id);
+                    cmd.Parameters.AddWithValue("oldpassword", u.OldPassword);                  
+                    cmd.Parameters.AddWithValue("password", u.Password);
+
+                    connec.Open();
+                    Int32 state =(Int32)cmd.ExecuteScalar();
+                    return (int)state;
+                }
+            }
+        }
+
 
     }
 }

@@ -7,5 +7,6 @@
         void Post<T>(string action, T item);
         T2 PostWithReturn<T,T2>(string action, T item);
         void Put<T>(string action, T item);
+        T2 PutWithReturn<T, T2>(string action, T item);
     }
 }

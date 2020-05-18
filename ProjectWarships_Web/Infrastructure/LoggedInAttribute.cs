@@ -14,7 +14,7 @@ namespace ProjectWarships_Web.Infrastructure
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             BaseController controller = (BaseController)context.Controller;
-            controller.ViewBag.isLogged = (controller.SessionManager.Id != -1);
+            controller.ViewBag.isLogged = (controller.SessionManager.Id != -1);    
         }
     }
 }
