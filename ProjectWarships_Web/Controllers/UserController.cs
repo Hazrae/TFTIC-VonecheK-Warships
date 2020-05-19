@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Authentication;
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
+using MimeKit;
 using ProjectWarships_Tools.Cryptography;
 using ProjectWarships_Web.Infrastructure;
 using ProjectWarships_Web.Models;
@@ -226,9 +229,8 @@ namespace ProjectWarships_Web.Controllers
                         return View(lu);
                     }
                     else if (u.IsActive == false)
-                    {
-                        ModelState.AddModelError(string.Empty, "This account has been deactivate");
-                        return View(lu);
+                    {                       
+                        return RedirectToAction("Contact");
                     }
                     else
                     {
@@ -246,7 +248,45 @@ namespace ProjectWarships_Web.Controllers
             {
                 return View();
             }
-        } 
+        }
+
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult Contact(Contact contact)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Name", "from.website@example.com"));
+            message.To.Add(new MailboxAddress("projectwarships@gmail.com"));
+            message.Subject = $"[Contact from your website] { contact.Subject }";
+
+            var builder = new BodyBuilder
+            {
+                HtmlBody = $"<div><span style='font-weight: bold'>De</span> : {contact.Name} </div><div><span style='font-weight: bold'>Mail</span> : {contact.Email}</div><div style='margin-top: 30px'>{contact.Message}</div>"
+            };
+
+            message.Body = builder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {                
+                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+                client.Connect("smtp.gmail.com", 587);
+
+                // Deactivation OAuth authenticafication 
+                client.AuthenticationMechanisms.Remove("XOAUTH2");
+                client.Authenticate("projectwarships@gmail.com", "warships!=1234");
+
+                client.Send(message);
+                client.Disconnect(true);
+            }
+
+            return View(contact);
+        }
 
         [AuthRequired]
         public ActionResult Logout()

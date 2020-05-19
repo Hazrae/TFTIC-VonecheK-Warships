@@ -18,7 +18,6 @@ namespace ProjectWarships_Web.Utils
 			set { _client = value; }
 		}
 
-
 		public HttpController(Uri uri)
 		{
 			HttpClientHandler handler = new HttpClientHandler() { SslProtocols = SslProtocols.Tls12 };

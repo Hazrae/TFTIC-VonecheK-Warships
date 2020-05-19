@@ -27,7 +27,7 @@ namespace ProjectWarships_Web
         {
             services.AddControllersWithViews();
 
-            services.AddSingleton<Uri>(new Uri("https://localhost:5001/api/")); // api crypto
+            services.AddSingleton<Uri>(new Uri("https://localhost:5003/api/")); // api crypto
             services.AddSingleton<IAPIConsume,APIConsume>();
 
             #region Ajout des services pour les Sessions
