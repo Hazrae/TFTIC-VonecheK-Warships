@@ -5,30 +5,34 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using ProjectWarships_API.Models;
 using ProjectWarships_API.Utils;
 using ProjectWarships_Tools.Cryptography;
-using Warships_DAL.Utils;
+using Warships_DAL.Repositories;
+using Warships_DAL.Services;
 
 namespace ProjectWarships_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : BaseController
-    {
-        public UserController(IRSAEncryption encrypt) : base(encrypt) { }
+    {          
+           
+
+        public UserController(IRSAEncryption encrypt, IUser userService) : base(encrypt, userService) { }
         // GET: api/User
         [HttpGet]
         public IEnumerable<User> Get()
         {
-            return Handler.UserServiceInstance.GetAll().Select(x => x.toAPI());
+            return _userService.GetAll().Select(x => x.toAPI());
         }
 
         // GET: api/User/5
         [HttpGet("{id}")]
         public User Get(int id)
         {
-            return Handler.UserServiceInstance.GetOne(id).toAPI();
+            return _userService.GetOne(id).toAPI();
         }
 
         // POST: api/User
@@ -39,7 +43,7 @@ namespace ProjectWarships_API.Controllers
             {
                 string pwDecrypt = _encrypt.Decrypt(Convert.FromBase64String(u.Password));
                 u.Password = pwDecrypt;
-                Handler.UserServiceInstance.Create(u.toDAL());
+                _userService.Create(u.toDAL());
             }
             catch (SqlException e)
             {
@@ -63,7 +67,7 @@ namespace ProjectWarships_API.Controllers
         {
             try
             {
-                Handler.UserServiceInstance.Update(id, u.toDAL()); ;
+                _userService.Update(id, u.toDAL()); ;
             }
             catch (SqlException e)
             {
@@ -91,7 +95,7 @@ namespace ProjectWarships_API.Controllers
             pwDecrypt = _encrypt.Decrypt(Convert.FromBase64String(u.OldPassword));
             u.OldPassword = pwDecrypt;
 
-            int state = Handler.UserServiceInstance.UpdatePassword(id, u.toDALPW()); ;
+            int state = _userService.UpdatePassword(id, u.toDALPW()); ;
             if (state == 1)
                 return new UserResponse { ErrorCode = 3 };
             else
@@ -102,7 +106,7 @@ namespace ProjectWarships_API.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            Handler.UserServiceInstance.Delete(id);
+            _userService.Delete(id);
         }
 
         [HttpPost]   
@@ -111,7 +115,7 @@ namespace ProjectWarships_API.Controllers
         {
             string pwDecrypt = _encrypt.Decrypt(Convert.FromBase64String(u.Password));
             u.Password = pwDecrypt;
-            return Handler.UserServiceInstance.Login(u.Login,u.Password).toAPI();
+            return _userService.Login(u.Login,u.Password).toAPI();
         }
 
     }

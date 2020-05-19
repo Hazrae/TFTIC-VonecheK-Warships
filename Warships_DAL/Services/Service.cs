@@ -3,19 +3,24 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 using System.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace Warships_DAL.Services
 {
     public class Service
-    {       
+    {   
+        protected IConfiguration _config;
 
-        //TODO : connection string dans un fichier de config
-        public string stringConnec = @"Data Source=DESKTOP-7ND5R6T;Initial Catalog=WarshipsDB;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-        //public string stringConnec = ConfigurationManager.ConnectionStrings["WarshipsDB"].ConnectionString;
-        protected Service()
-        {          
+        public string stringConnec
+        {
+            get { return _config.GetConnectionString("WarshipsDB"); }
         }
-        
-        
+
+        protected Service(IConfiguration config)
+        {
+            _config = config;
+
+        }     
+       
     }
 }

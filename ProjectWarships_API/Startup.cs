@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ProjectWarships_Tools.Cryptography;
+using Warships_DAL.Repositories;
+using Warships_DAL.Services;
 
 namespace ProjectWarships_API
 {
@@ -28,6 +30,8 @@ namespace ProjectWarships_API
         {
             services.AddControllers();
             services.AddSingleton<IRSAEncryption, RSAEncryption>(x => new RSAEncryption(1024));
+            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton<IUser, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

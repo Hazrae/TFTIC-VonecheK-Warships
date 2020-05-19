@@ -2,23 +2,19 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Xml;
 using Warships_DAL.Models;
 using Warships_DAL.Repositories;
-using Warships_DAL.Utils;
-using System.Configuration;
-using System.Reflection;
+
+using Microsoft.Extensions.Configuration;
 
 namespace Warships_DAL.Services
 {
 
     //IRepo ; basic CRUD
     //IUser : specific user DB management
-    public class UserService : Service, IRepository<User>, IUser
+    public class UserService : Service, IUser
     {
-        public UserService() : base(){ }    
+        public UserService(IConfiguration config) : base(config){ }    
         
         public void Create(User u)
         {
@@ -37,10 +33,7 @@ namespace Warships_DAL.Services
                     connec.Open();
                     cmd.ExecuteNonQuery();
                 }
-            }
-            
-            
-        
+            }                   
         }
 
         public void Delete(int id)
@@ -183,10 +176,8 @@ namespace Warships_DAL.Services
                         else
                             return new User();
                     }
-
                 }
             }
-
         }
 
         public void ChangeAccountSpec(User u)
@@ -235,7 +226,5 @@ namespace Warships_DAL.Services
                 }
             }
         }
-
-
     }
 }

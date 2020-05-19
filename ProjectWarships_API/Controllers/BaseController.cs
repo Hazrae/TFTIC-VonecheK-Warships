@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using ProjectWarships_Tools.Cryptography;
+using Warships_DAL.Repositories;
 
 namespace ProjectWarships_API.Controllers
 {
@@ -12,10 +14,12 @@ namespace ProjectWarships_API.Controllers
     [ApiController]
     public class BaseController : ControllerBase
     {
-        protected IRSAEncryption _encrypt;
-        public BaseController(IRSAEncryption encrypt)
+        protected IRSAEncryption _encrypt;   
+        protected IUser _userService;
+        public BaseController(IRSAEncryption encrypt, IUser userService)
         {
-            _encrypt = encrypt;
+            _encrypt = encrypt;       
+            _userService = userService;
         }
     }
 }

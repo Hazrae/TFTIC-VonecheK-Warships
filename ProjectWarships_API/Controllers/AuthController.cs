@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using ProjectWarships_Tools.Cryptography;
+using Warships_DAL.Repositories;
 
 namespace ProjectWarships_API.Controllers
 {
@@ -12,7 +14,7 @@ namespace ProjectWarships_API.Controllers
     [ApiController]
     public class AuthController : BaseController
     {
-        public AuthController(IRSAEncryption encrypt) : base(encrypt) { }
+        public AuthController(IRSAEncryption encrypt, IUser userService) : base(encrypt, userService) { }
 
         [Route("GetKey")]
         public byte[] GetKey()

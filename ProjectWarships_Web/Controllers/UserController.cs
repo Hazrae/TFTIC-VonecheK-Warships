@@ -225,6 +225,11 @@ namespace ProjectWarships_Web.Controllers
                         ModelState.AddModelError(string.Empty, "This account doesn't exists");
                         return View(lu);
                     }
+                    else if (u.IsActive == false)
+                    {
+                        ModelState.AddModelError(string.Empty, "This account has been deactivate");
+                        return View(lu);
+                    }
                     else
                     {
                         SessionManager.Id = u.Id;
@@ -241,7 +246,7 @@ namespace ProjectWarships_Web.Controllers
             {
                 return View();
             }
-        }
+        } 
 
         [AuthRequired]
         public ActionResult Logout()

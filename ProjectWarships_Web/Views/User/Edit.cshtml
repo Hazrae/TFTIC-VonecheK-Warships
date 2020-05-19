@@ -5,6 +5,10 @@
 }
 
 <h1>Profile Edition</h1>
+<div>
+    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Back to Home</a>
+</div>
+<br/>
 <hr />
 <p class="text-success">@ViewBag.Confirm</p>
 <div class="row">
@@ -32,17 +36,15 @@
         </form>
     </div>
 </div>
-
-<div>   
-        <a class="btn btn-info" asp-action="EditPw">Change my Password</a>   
-</div>
-
 <br />
 <br />
-
 <div>
-    <a asp-controller="Home" asp-action="Index">Back to Home</a>
+    <a class="btn btn-info" asp-action="EditPw">Change my Password</a>
+    <a class="btn btn-info" asp-action="Delete">Close my Account</a>
 </div>
+
+<br />
+<br />
 
 
 @section Scripts {

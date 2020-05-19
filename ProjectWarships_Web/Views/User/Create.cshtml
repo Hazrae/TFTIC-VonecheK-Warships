@@ -7,6 +7,10 @@
 <h1>Create</h1>
 
 <h4>Register a New Account</h4>
+<div>
+    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Back to Home</a>
+</div>
+<br />
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -24,7 +28,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Confirm" class="control-label"></label>
-                <input asp-for="Confirm" class="form-control"  />
+                <input asp-for="Confirm" class="form-control" />
                 <span asp-validation-for="Confirm" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -42,10 +46,6 @@
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to Home</a>
 </div>
 
 @section Scripts {
