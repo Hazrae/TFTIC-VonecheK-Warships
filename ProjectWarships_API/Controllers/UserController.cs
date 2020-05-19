@@ -83,8 +83,8 @@ namespace ProjectWarships_API.Controllers
 
         // PUT: api/User/PutPw/5
         [HttpPut]
-        [Route("PutPw/{id}")]
-        public UserResponse PutPw(int id, UserPassword u)
+        [Route("ChangePw/{id}")]
+        public UserResponse ChangePw(int id, UserPassword u)
         {
             string pwDecrypt = _encrypt.Decrypt(Convert.FromBase64String(u.Password));
             u.Password = pwDecrypt;

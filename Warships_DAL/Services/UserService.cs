@@ -212,9 +212,7 @@ namespace Warships_DAL.Services
             }
         }
         public int UpdatePassword(int id, UserPassword u)
-        {
-
-            //Change the Spec bits of an user
+        {     
             using (SqlConnection connec = new SqlConnection(stringConnec))
             {
 
@@ -227,9 +225,13 @@ namespace Warships_DAL.Services
                     cmd.Parameters.AddWithValue("oldpassword", u.OldPassword);                  
                     cmd.Parameters.AddWithValue("password", u.Password);
 
+                    SqlParameter returnValue = new SqlParameter();
+                    returnValue.Direction = ParameterDirection.ReturnValue;
+                    cmd.Parameters.Add(returnValue);
+
                     connec.Open();
-                    Int32 state =(Int32)cmd.ExecuteScalar();
-                    return (int)state;
+                    cmd.ExecuteNonQuery();
+                    return (int)returnValue.Value;
                 }
             }
         }

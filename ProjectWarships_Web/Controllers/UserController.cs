@@ -150,7 +150,7 @@ namespace ProjectWarships_Web.Controllers
                     pwEncrypt = _encrypt.Encrypt(user.OldPassword);
                     user.OldPassword = Convert.ToBase64String(pwEncrypt);
 
-                    UserResponse ur = ConsumeInstance.PutWithReturn<EditPassword, UserResponse>("User/PutPw/" + SessionManager.Id, user);
+                    UserResponse ur = ConsumeInstance.PutWithReturn<EditPassword, UserResponse>("User/ChangePw/" + SessionManager.Id, user);
                     if (ur.ErrorCode == 3)
                     {
                         ModelState.AddModelError(string.Empty, "The old password doesn't match");
