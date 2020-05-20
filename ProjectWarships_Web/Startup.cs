@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectWarships_Web.Infrastructure;
 using ProjectWarships_Web.Utils;
+using Vereyon.Web;
+using Newtonsoft.Json;
 
 namespace ProjectWarships_Web
 {
@@ -25,12 +27,17 @@ namespace ProjectWarships_Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddFlashMessage();          
+            services.AddControllersWithViews().AddNewtonsoftJson();
+            //services.AddControllersWithViews();            
+            
+
 
             services.AddSingleton<Uri>(new Uri("https://localhost:5001/api/")); // api crypto
             services.AddSingleton<IAPIConsume,APIConsume>();
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IGoogleToken, GoogleToken>();
+            services.AddTransient<IFlashMessage, FlashMessage>();
 
             #region Ajout des services pour les Sessions
             services.AddDistributedMemoryCache();

@@ -14,6 +14,8 @@ namespace ProjectWarships_Web.Utils
     public class GoogleToken : IGoogleToken
     {
         IConfiguration _config;
+
+        //Get secret infos from appsettings
         public string Id
         {
             get { return _config.GetValue<string>("Google:Id"); }
@@ -35,7 +37,7 @@ namespace ProjectWarships_Web.Utils
         public async Task<SaslMechanismOAuth2> Token()
         {   
             var clientSecrets = new ClientSecrets
-            {
+            {               
                 ClientId = Id,
                 ClientSecret = Secret
             };
@@ -53,6 +55,8 @@ namespace ProjectWarships_Web.Utils
 
             //if (authCode.ShouldRequestAuthorizationCode(credential.Token))
             //    await credential.RefreshTokenAsync(CancellationToken.None);
+
+            // Refresh Token if needed (1h timeout)
             if (credential.Token.IsExpired(Google.Apis.Util.SystemClock.Default))
             {
                 await credential.RefreshTokenAsync(CancellationToken.None);
