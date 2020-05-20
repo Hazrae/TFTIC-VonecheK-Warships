@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Authentication;
-using System.Threading.Tasks;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Extensions.Logging;
 using MimeKit;
 using ProjectWarships_Tools.Cryptography;
 using ProjectWarships_Web.Infrastructure;
@@ -22,8 +16,12 @@ namespace ProjectWarships_Web.Controllers
     {
 
         private IRSAEncryption _encrypt;
+        private IGoogleToken _googleToken;
         // GET: User   
-        public UserController(IAPIConsume _consumeInstance, ISessionManager _session) : base(_consumeInstance, _session) { }
+        public UserController(IAPIConsume _consumeInstance, ISessionManager _session, IGoogleToken googleToken) : base(_consumeInstance, _session) 
+        {
+            _googleToken = googleToken;
+        }
         public ActionResult Index()
         {
             return View();
@@ -258,34 +256,33 @@ namespace ProjectWarships_Web.Controllers
         [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Contact(Contact contact)
-        {
-            var message = new MimeMessage();
+        {        
+            SaslMechanismOAuth2 oauth2 = _googleToken.Token().Result;
+            MimeMessage message = new MimeMessage();
             message.From.Add(new MailboxAddress("Name", "from.website@example.com"));
-            message.To.Add(new MailboxAddress("projectwarships@gmail.com"));
+            message.To.Add(new MailboxAddress("kevinvoneche@gmail.com"));
             message.Subject = $"[Contact from your website] { contact.Subject }";
 
-            var builder = new BodyBuilder
+            BodyBuilder builder = new BodyBuilder
             {
                 HtmlBody = $"<div><span style='font-weight: bold'>De</span> : {contact.Name} </div><div><span style='font-weight: bold'>Mail</span> : {contact.Email}</div><div style='margin-top: 30px'>{contact.Message}</div>"
             };
 
             message.Body = builder.ToMessageBody();
 
-            using (var client = new SmtpClient())
-            {                
+            using (SmtpClient client = new SmtpClient())
+            {
                 client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
                 client.Connect("smtp.gmail.com", 587);
 
-                // Deactivation OAuth authenticafication 
-                client.AuthenticationMechanisms.Remove("XOAUTH2");
-                client.Authenticate("projectwarships@gmail.com", "warships!=1234");
+                client.Authenticate(oauth2);
 
                 client.Send(message);
                 client.Disconnect(true);
-            }
 
-            return View(contact);
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [AuthRequired]
@@ -294,5 +291,6 @@ namespace ProjectWarships_Web.Controllers
             SessionManager.Abandon();
             return RedirectToAction("Index", "Home");
         }
+       
     }
 }

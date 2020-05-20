@@ -29,6 +29,8 @@ namespace ProjectWarships_Web
 
             services.AddSingleton<Uri>(new Uri("https://localhost:5003/api/")); // api crypto
             services.AddSingleton<IAPIConsume,APIConsume>();
+            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton<IGoogleToken, GoogleToken>();
 
             #region Ajout des services pour les Sessions
             services.AddDistributedMemoryCache();

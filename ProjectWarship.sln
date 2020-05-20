@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectWarships_Web", "Proj
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05-Toolbox", "05-Toolbox", "{8BC23C91-2A9C-46ED-9DB8-882596F9F5AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectWarships_Tools", "ProjectWarships_Tools\ProjectWarships_Tools.csproj", "{1F55AC8F-D4C9-4867-A491-5EBB427234E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectWarships_Tools", "ProjectWarships_Tools\ProjectWarships_Tools.csproj", "{1F55AC8F-D4C9-4867-A491-5EBB427234E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
