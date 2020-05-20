@@ -1,4 +1,5 @@
 ﻿using System;
+using MailKit.Net.Imap;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,7 @@ using ProjectWarships_Tools.Cryptography;
 using ProjectWarships_Web.Infrastructure;
 using ProjectWarships_Web.Models;
 using ProjectWarships_Web.Utils;
+using Vereyon.Web;
 
 namespace ProjectWarships_Web.Controllers
 {
@@ -17,11 +19,13 @@ namespace ProjectWarships_Web.Controllers
     {
 
         private IRSAEncryption _encrypt;
-        private IGoogleToken _googleToken;  
+        private IGoogleToken _googleToken;
+        private IConfiguration _config;
         // GET: User   
-        public UserController(IAPIConsume _consumeInstance, ISessionManager _session, IGoogleToken googleToken) : base(_consumeInstance, _session) 
+        public UserController(IAPIConsume _consumeInstance, ISessionManager _session, IGoogleToken googleToken, IConfiguration config, IFlashMessage flash) : base(_consumeInstance, _session, flash) 
         {
-            _googleToken = googleToken;   
+            _googleToken = googleToken;
+            _config = config;
         }
         public ActionResult Index()
         {
@@ -61,16 +65,17 @@ namespace ProjectWarships_Web.Controllers
                     UserResponse ur = ConsumeInstance.PostWithReturn<RegisterUser, UserResponse>("User", ru);
                     if (ur.ErrorCode == 1)
                     {
-                        ModelState.AddModelError(string.Empty, "E-mail adress is already in use");
+                        FlashMessage.Warning("Email already in use");
                         return View(ru);
                     }
                     else if (ur.ErrorCode == 2)
                     {
-                        ModelState.AddModelError(string.Empty, "Login is already in use");
+                        FlashMessage.Warning("Login already in use");
                         return View(ru);
                     }
                     else
-                        return RedirectToAction("Index", "Home");
+                        FlashMessage.Confirmation("Account created");
+                        return RedirectToAction("Login");
                 }
                 else
                 {
@@ -103,18 +108,18 @@ namespace ProjectWarships_Web.Controllers
                 {
                     UserResponse ur = ConsumeInstance.PutWithReturn<EditUser, UserResponse>("User/" + SessionManager.Id, user);
                     if (ur.ErrorCode == 1)
-                    {
-                        ModelState.AddModelError(string.Empty, "E-mail adress is already in use");
+                    {                       
+                        FlashMessage.Warning("Email already in use");
                         return View(user);
                     }
                     else if (ur.ErrorCode == 2)
                     {
-                        ModelState.AddModelError(string.Empty, "Login is already in use");
+                        FlashMessage.Warning("Login already in use");
                         return View(user);
                     }
                     else
                         SessionManager.Login = user.Login;
-                    ViewBag.Confirm = "Profile updated with success";
+                    FlashMessage.Confirmation("Profile updated with success");
                     return View(user);
                 }
                 else
@@ -155,10 +160,12 @@ namespace ProjectWarships_Web.Controllers
                     UserResponse ur = ConsumeInstance.PutWithReturn<EditPassword, UserResponse>("User/ChangePw/" + SessionManager.Id, user);
                     if (ur.ErrorCode == 3)
                     {
-                        ModelState.AddModelError(string.Empty, "The old password doesn't match");
+                        FlashMessage.Warning("The old password doesn't match");
                         return View(user);
                     }
                     else
+                        FlashMessage.Confirmation("Password Changed, Please reconnect");
+                        SessionManager.Abandon();
                         return RedirectToAction("Index", "Home");
                 }
                 else
@@ -172,31 +179,6 @@ namespace ProjectWarships_Web.Controllers
             }
         }
 
-
-        // GET: User/Delete/5
-        [AuthRequired]
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: User/Delete/5
-        [AuthRequired]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index", "Home");
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
         [AnonymousRequired]
         // GET: User/Create
@@ -224,17 +206,19 @@ namespace ProjectWarships_Web.Controllers
 
                     if (u.Login != lu.Login)
                     {
-                        ModelState.AddModelError(string.Empty, "This account doesn't exists");
+                        FlashMessage.Warning("This account doesn't exists");
                         return View(lu);
                     }
                     else if (u.IsActive == false)
-                    {                       
+                    {
+                        FlashMessage.Warning("Your account has been deactivate, Please contact the admin");
                         return RedirectToAction("Contact");
                     }
                     else
                     {
                         SessionManager.Id = u.Id;
                         SessionManager.Login = u.Login;
+                        FlashMessage.Confirmation("Welcome " + u.Login);
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -260,8 +244,8 @@ namespace ProjectWarships_Web.Controllers
         {        
             SaslMechanismOAuth2 oauth2 = _googleToken.Token().Result;
             MimeMessage message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Name", "from.website@example.com"));
-            message.To.Add(new MailboxAddress("kevinvoneche@gmail.com"));
+            message.From.Add(new MailboxAddress("Contact", "from.website@example.com"));
+            message.To.Add(new MailboxAddress(_config.GetValue<string>("Google:Mail")));
             message.Subject = $"[Contact from your website] { contact.Subject }";
 
             BodyBuilder builder = new BodyBuilder
@@ -271,18 +255,18 @@ namespace ProjectWarships_Web.Controllers
 
             message.Body = builder.ToMessageBody();
 
-            using (SmtpClient client = new SmtpClient())
+            using (var client = new SmtpClient())
             {
-                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-
                 client.Connect("smtp.gmail.com", 587);
 
+                // use the OAuth2.0 access token obtained above          
                 client.Authenticate(oauth2);
 
                 client.Send(message);
                 client.Disconnect(true);
-
-                return RedirectToAction("Index", "Home");
+                FlashMessage.Confirmation("Mail sent with success");
+                ModelState.Clear();
+                return View();
             }
         }
 

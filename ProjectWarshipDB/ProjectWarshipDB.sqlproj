@@ -57,16 +57,11 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="User" />
-    <Folder Include="Chat" />
     <Folder Include="Tools" />
     <Folder Include="User\StoredProcedures" />
     <Folder Include="User\Triggers" />
     <Folder Include="User\Views" />
-    <Folder Include="Chat\Table" />
     <Folder Include="User\Table" />
-    <Folder Include="Chat\StoredProcedures" />
-    <Folder Include="Chat\Triggers" />
-    <Folder Include="Chat\Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tools\Salt.sql" />
@@ -75,7 +70,6 @@
     <Build Include="User\StoredProcedures\DeleteUser.sql" />
     <Build Include="User\StoredProcedures\UpdateAccountSpec.sql" />
     <Build Include="User\StoredProcedures\UpdateUser.sql" />
-    <Build Include="Chat\Table\Chat.sql" />
     <Build Include="User\Table\User.sql" />
     <Build Include="User\Triggers\OnDelete.sql" />
     <Build Include="User\StoredProcedures\GetUsers.sql" />

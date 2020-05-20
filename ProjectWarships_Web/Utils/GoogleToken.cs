@@ -12,51 +12,57 @@ using System.Threading.Tasks;
 namespace ProjectWarships_Web.Utils
 {
     public class GoogleToken : IGoogleToken
-    { 
-        public IConfiguration _config { get; set; }
-        private string Id
+    {
+        IConfiguration _config;
+
+        //Get secret infos from appsettings
+        public string Id
         {
-            get { return _config.GetValue<string>("Id"); }
+            get { return _config.GetValue<string>("Google:Id"); }
         }
 
-        private string Secret
+        public string Secret
         {
-            get { return _config.GetValue<string>("Secret"); }
+            get { return _config.GetValue<string>("Google:Secret"); }
         }
 
-        private string Mail
+        public string Mail
         {
-            get { return _config.GetValue<string>("Mail"); }
+            get { return _config.GetValue<string>("Google:Mail"); }
         }
-       
         public GoogleToken(IConfiguration config)
         {
             _config = config;
         }
         public async Task<SaslMechanismOAuth2> Token()
-        {        
-            ClientSecrets clientSecrets = new ClientSecrets
-            {
-                // Stockés dans mon app.settings
+        {   
+            var clientSecrets = new ClientSecrets
+            {               
                 ClientId = Id,
                 ClientSecret = Secret
             };
 
-            GoogleAuthorizationCodeFlow codeFlow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+            var codeFlow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
             {
                 DataStore = new FileDataStore("CredentialCacheFolder", false),
                 Scopes = new[] { "https://mail.google.com/" },
                 ClientSecrets = clientSecrets
             });
 
-            LocalServerCodeReceiver codeReceiver = new LocalServerCodeReceiver();
-            AuthorizationCodeInstalledApp authCode = new AuthorizationCodeInstalledApp(codeFlow, codeReceiver);
-            UserCredential credential = await authCode.AuthorizeAsync(Mail, CancellationToken.None);
+            var codeReceiver = new LocalServerCodeReceiver();
+            var authCode = new AuthorizationCodeInstalledApp(codeFlow, codeReceiver);
+            var credential = await authCode.AuthorizeAsync(Mail, CancellationToken.None);
 
-            if (authCode.ShouldRequestAuthorizationCode(credential.Token))
+            //if (authCode.ShouldRequestAuthorizationCode(credential.Token))
+            //    await credential.RefreshTokenAsync(CancellationToken.None);
+
+            // Refresh Token if needed (1h timeout)
+            if (credential.Token.IsExpired(Google.Apis.Util.SystemClock.Default))
+            {
                 await credential.RefreshTokenAsync(CancellationToken.None);
+            }
 
-            SaslMechanismOAuth2 oauth2 = new SaslMechanismOAuth2(credential.UserId, credential.Token.AccessToken);
+            var oauth2 = new SaslMechanismOAuth2(credential.UserId, credential.Token.AccessToken);
             return oauth2;
         }
     }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProjectWarships_Web.Infrastructure;
 using ProjectWarships_Web.Utils;
+using Vereyon.Web;
 
 namespace ProjectWarships_Web.Controllers
 {
@@ -13,12 +14,16 @@ namespace ProjectWarships_Web.Controllers
     public class BaseController : Controller
     {
         protected internal IAPIConsume ConsumeInstance { get; set; }
-        protected internal ISessionManager SessionManager { get; set; }      
+        protected internal ISessionManager SessionManager { get; set; }
 
-        protected BaseController(IAPIConsume _apiConsume, ISessionManager _session)
+        protected internal IFlashMessage FlashMessage { get; set; }
+
+
+        protected BaseController(IAPIConsume _apiConsume, ISessionManager _session, IFlashMessage flashMessage)
         {         
             ConsumeInstance = _apiConsume;
             SessionManager = _session;
+            FlashMessage = flashMessage;
         }
     }
 }

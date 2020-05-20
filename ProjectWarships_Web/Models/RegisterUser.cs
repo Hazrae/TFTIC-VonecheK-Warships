@@ -33,7 +33,7 @@ namespace ProjectWarships_Web.Models
         public string Mail { get; set; }
 
         [Required]  
-        [AgeValidator(ErrorMessage = "You must have 12+ years")]
+        [AgeValidator(ErrorMessage = "You must have between 12 and 266 years")]
         [DataType(DataType.Date)]
         [Display(Name = "Date of Birth")]
         public DateTime BirthDate { get; set; }   
