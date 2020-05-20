@@ -1,8 +1,10 @@
 ﻿using System;
+using MailKit.Net.Imap;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 using ProjectWarships_Tools.Cryptography;
 using ProjectWarships_Web.Infrastructure;
@@ -17,10 +19,12 @@ namespace ProjectWarships_Web.Controllers
 
         private IRSAEncryption _encrypt;
         private IGoogleToken _googleToken;
+        private IConfiguration _config;
         // GET: User   
-        public UserController(IAPIConsume _consumeInstance, ISessionManager _session, IGoogleToken googleToken) : base(_consumeInstance, _session) 
+        public UserController(IAPIConsume _consumeInstance, ISessionManager _session, IGoogleToken googleToken, IConfiguration config) : base(_consumeInstance, _session) 
         {
             _googleToken = googleToken;
+            _config = config;
         }
         public ActionResult Index()
         {
@@ -259,8 +263,8 @@ namespace ProjectWarships_Web.Controllers
         {        
             SaslMechanismOAuth2 oauth2 = _googleToken.Token().Result;
             MimeMessage message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Name", "from.website@example.com"));
-            message.To.Add(new MailboxAddress("kevinvoneche@gmail.com"));
+            message.From.Add(new MailboxAddress("Contact", "from.website@example.com"));
+            message.To.Add(new MailboxAddress(_config.GetValue<string>("Google:Mail")));
             message.Subject = $"[Contact from your website] { contact.Subject }";
 
             BodyBuilder builder = new BodyBuilder
@@ -270,18 +274,17 @@ namespace ProjectWarships_Web.Controllers
 
             message.Body = builder.ToMessageBody();
 
-            using (SmtpClient client = new SmtpClient())
+            using (var client = new SmtpClient())
             {
-                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-
                 client.Connect("smtp.gmail.com", 587);
 
+                // use the OAuth2.0 access token obtained above          
                 client.Authenticate(oauth2);
 
                 client.Send(message);
-                client.Disconnect(true);
+                client.Disconnect(true);          
 
-                return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home");
             }
         }
 
