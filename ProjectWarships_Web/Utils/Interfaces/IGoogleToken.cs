@@ -1,4 +1,5 @@
 ﻿using MailKit.Security;
+using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
 namespace ProjectWarships_Web.Utils

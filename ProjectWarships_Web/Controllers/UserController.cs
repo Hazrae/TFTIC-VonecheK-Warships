@@ -3,6 +3,7 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 using ProjectWarships_Tools.Cryptography;
 using ProjectWarships_Web.Infrastructure;
@@ -16,11 +17,11 @@ namespace ProjectWarships_Web.Controllers
     {
 
         private IRSAEncryption _encrypt;
-        private IGoogleToken _googleToken;
+        private IGoogleToken _googleToken;  
         // GET: User   
         public UserController(IAPIConsume _consumeInstance, ISessionManager _session, IGoogleToken googleToken) : base(_consumeInstance, _session) 
         {
-            _googleToken = googleToken;
+            _googleToken = googleToken;   
         }
         public ActionResult Index()
         {
