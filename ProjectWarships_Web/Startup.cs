@@ -1,17 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProjectWarships_Web.Hubs;
 using ProjectWarships_Web.Infrastructure;
 using ProjectWarships_Web.Utils;
 using Vereyon.Web;
-using Newtonsoft.Json;
 
 namespace ProjectWarships_Web
 {
@@ -29,7 +25,7 @@ namespace ProjectWarships_Web
         {
             services.AddFlashMessage();          
             services.AddControllersWithViews().AddNewtonsoftJson();
-            //services.AddControllersWithViews();            
+            services.AddSignalR();
             
 
 
@@ -80,6 +76,7 @@ namespace ProjectWarships_Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<ChatHub>("/chatHub");
             });
         }
     }

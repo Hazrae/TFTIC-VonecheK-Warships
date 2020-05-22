@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewData["Title"] = "Chat";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/chat.css" />
+</head>
+
+<div class="chatcontainer" id="messagesList"></div>
+
+<div class="sendcontainer">
+    <span><input type="text" id="messageInput" /></span>
+
+        <input type="button" id="sendButton" value="Send Message" style="float:right" />
+</div>
+
+
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
+
