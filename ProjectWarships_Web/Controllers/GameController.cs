@@ -13,5 +13,10 @@ namespace ProjectWarships_Web.Controllers
         {
             return View();
         }
+
+        public IActionResult Battle()
+        {
+            return View();
+        }
     }
 }

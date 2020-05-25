@@ -14,10 +14,6 @@ connection.on("ReceiveMessage", function (user, message) {
     pUser.textContent = user.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     pUser.className = "usercontainer";
 
-    var pMessage = document.createElement("p");
-    pMessage.textContent =message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    pMessage.className = "messagecontainer";
-
     var date = new Date();
     var pDate = document.createElement("div");
     var min;
@@ -28,9 +24,14 @@ connection.on("ReceiveMessage", function (user, message) {
     pDate.textContent = date.getHours() + ":" + min;
     pDate.className = "datecontainer";
 
+    var pMessage = document.createElement("p");
+    pMessage.textContent =message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    pMessage.className = "messagecontainer";    
+
+    //Adding created div in the 
     div.appendChild(pUser);
     div.appendChild(pDate); 
-    div.appendChild(pMessage);    
+    div.appendChild(pMessage);
 
     document.getElementById("messagesList").appendChild(div);
     var elem = document.getElementById('messagesList');

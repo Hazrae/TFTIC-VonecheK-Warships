@@ -22,15 +22,20 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row">
                     @{
-                        if (ViewBag.IsLogged != false)
-                        {
-                            <ul class="navbar-nav mr-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Game" asp-action="Chat">Chat Room</a>
-                                </li>
-                            </ul>
-                            }
-                        }
+                        //if (ViewBag.IsLogged != false)
+                        //{
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Game" asp-action="Chat">Chat Room</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Game" asp-action="Battle">New Game</a>
+                            </li>
+                        </ul>
+                        //}
+                    }
                 </div>
                     <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                         <ul class="navbar-nav ml-auto">
