@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectWarships_Tools.Cryptography;
+using Warships_DAL.Repositories;
+using Warships_DAL.Services;
 
 namespace ProjectWarships_Angular_API
 {
